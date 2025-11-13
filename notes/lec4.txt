@@ -1,0 +1,55 @@
+Agent Quality: Key Notes from the Whitepaper Guide
+The whitepaper "Agent Quality: A Practical Guide from Evaluation to Observability" emphasizes building trustworthy AI agents by treating quality as a core architectural pillar, not an afterthought s .
+
+Core Problem: Unpredictability of AI Agents
+AI agents are non-deterministic, making their actions hard to predict s .
+Traditional software testing fails because agents make dynamic judgments like a Formula 1 car, not a predictable delivery truck s .
+Failures are often insidious (e.g., subtle errors like factual hallucinations or biases) rather than explicit crashes s .
+Three Core Messages
+The Trajectory is the Truth: Focus on the agent's entire path (chain of thought), not just the final output. Even correct answers via inefficient or risky paths indicate quality issues s s .
+Observability is Essential: Use logging, tracing, and metrics to inspect the agent's reasoning and debug effectively s .
+Evaluation as a Continuous Loop: Implement an agent quality flywheel where real-world insights (especially failures) feed back for ongoing improvements s .
+Specific Failure Modes in AI Agents
+Algorithmic Bias: Agents amplify flaws from training data, e.g., biased resume screening s .
+Factual Hallucination: Confidently inventing data or sources, leading to useless or harmful outputs s .
+Performance and Concept Drift: Agents fail to adapt to changing environments, e.g., outdated fraud detection s .
+Emergent Unintended Behaviors: Agents develop loopholes or superstitions to meet goals unexpectedly s .
+Agents involve planning, tool use, and memory, introducing complexity beyond static ML models s .
+
+Four Pillars of Agent Quality
+Effectiveness: Does the agent achieve the user's intended goal and meet underlying needs (e.g., resolving issues, not just closing tickets)? s .
+Efficiency: Solves problems quickly and cost-effectively (e.g., low latency, minimal tokens, direct paths) s .
+Robustness: Handles errors gracefully (e.g., API failures, unclear inputs) via retries or clarifications s .
+Safety and Alignment: Ensures ethics, avoids harm, resists attacks like prompt injection; non-negotiable s .
+Evaluation Strategy: Outside-In Hierarchy
+Outside-In (Blackbox): Start with end-to-end outcomes (e.g., task success, user satisfaction scores) to flag issues s .
+Inside-Out (Glassbox): If needed, analyze the trajectory for breakpoints like flawed planning, bad tool usage, or ignored feedback s s .
+Practical Tip for Kaggle ADK: Save successful trajectories as "golden cases" in test.json for regression testing to detect deviations s .
+
+Hybrid Evaluation System
+Automation:
+Basic metrics (e.g., ROUGE, BERTScore) for quick trend signals in CI/CD s .
+LLM as Judge: Use pairwise comparisons (A vs. B) with rubrics to avoid bias and get reliable win-loss rates s s .
+Agent as Judge: Specialized agents evaluate reasoning and tool choices in execution traces s .
+Human-in-the-Loop (HITL): Essential for nuance, domain expertise, and golden set creation. Use reviewer UIs showing conversation vs. internal trace s s .
+For high-stakes actions (e.g., payments), require human approval s .
+Responsible AI (RAI) Integration
+Red Teaming: Test safety vulnerabilities proactively s .
+Guardrails as Plugins: Hook into agent lifecycle (e.g., scan inputs for injections, outputs for PII leaks) s .
+Observability Pillars
+Logging: Structured (JSON) records of every step, including chain of thought, tool inputs/outputs s .
+Tracing: Connects logs into narratives (e.g., via OpenTelemetry) to show cause-effect in multi-step processes s .
+Metrics: Aggregated health indicators.
+Ops/SRE View: Latency (P50/P99), error rates, costs s .
+Data/Product View: Success rates, trajectory adherence, helpfulness s .
+Optimization: Use dynamic sampling (100% for errors, 10% for successes) to balance insight and performance s .
+
+The Agent Quality Flywheel
+Define pillars and instrument for observability.
+Evaluate via hybrid methods.
+Feed insights (especially failures) back to improve the agent and evaluation process s s .
+Key Takeaways
+Design for Evaluatability: Build quality in from the start s .
+Focus on Trajectory: Examine the full process with deep observability s .
+Humans as Arbiters: Automation scales, but humans define quality standards s .
+Instrument agents now for trustworthiness, especially with tools like Kaggle's ADK s s .

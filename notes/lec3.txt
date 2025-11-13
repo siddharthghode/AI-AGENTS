@@ -1,0 +1,54 @@
+MAE Notes: Context Engineering, Sessions, and Memory in AI Agents
+Based on the Whitepaper Companion Podcast discussing the Google x Kaggle whitepaper on AI agents, here are structured notes on Memory-Augmented Experiences (MAE)—focusing on the core concepts of context engineering, sessions, and memory to create stateful, personalized AI systems s s . These notes break down the key ideas into digestible sections for easy review.
+
+1. Core Trio: The Foundation of Stateful AI
+AI agents need memory-like capabilities to remember users, preferences, and conversations. The whitepaper outlines three interconnected components:
+
+Context Engineering: The "master controller" for dynamically managing information in the LLM's context window s s .
+
+Addresses LLMs' stateless nature—each API call starts fresh with no prior memory s .
+Unlike static prompt engineering (e.g., a fixed recipe), this prepares a full "mise en place" with relevant context, tools, user memory, and history s .
+Includes: System instructions, tool definitions, few-shot examples, RAG-fetched documents, conversation history, and tool outputs s .
+Sessions: Containers for a single conversation, tracking immediate history and working memory s s .
+
+Composed of events (chronological log: user inputs, agent responses, tool calls) and state (structured data like shopping cart items or process steps) s .
+Frameworks vary: ADK uses explicit events/states; LangGraph uses mutable state for in-place compaction s .
+In multi-agent systems (MAS): Options include shared history (unified log for collaboration) or separate histories (autonomous agents communicating via messages) s s .
+Memory: Long-term storage for personalization across sessions, capturing user-specific knowledge s s .
+
+Differs from RAG (static facts) by focusing on dynamic, user-specific info—like a personal assistant s .
+Types: Declarative (facts/events, e.g., favorite team) and procedural (skills/workflows, e.g., booking sequences) s .
+Storage: Structured collections (e.g., user profiles, rolling summaries); uses vector DBs for semantic search and knowledge graphs for relations s .
+Scopes: User-level (persistent), session-level (temporary), application-level (global, sanitized) s .
+2. Context Management Cycle
+Context engineering follows a tight loop to build statefulness s s :
+
+Fetch Context: Retrieve memories, RAG documents, and relevant data s .
+Prepare Context: Assemble the full prompt (hot path—blocks response) with history, tools, and user input s .
+Invoke LLM/Tools: Generate response and execute functions s .
+Update Context: Asynchronously save new insights to persistent storage s .
+Key Challenge: Context Rot—Degradation from overloaded/noisy windows s . Solution: Dynamic history mutation (summarization, pruning) to maintain focus s .
+
+3. Session Management and Compaction Strategies
+Sessions handle immediate interactions but require efficiency for performance s s .
+
+Security/Privacy: Isolate sessions with ACLs; redact PII (e.g., via Model Armor) before storage for GDPR/CCPA compliance s . Use TTL policies for data expiration s .
+Compaction to Fight Rot: Essential for long conversations to avoid token limits, high costs, and latency s .
+Simple Methods: Sliding window (last N turns) or token-based truncation s .
+Advanced: Recursive Summarization—LLM summarizes old chunks asynchronously (triggered by turns, inactivity, or task completion), replacing originals to cut tokens s s .
+4. Memory Lifecycle: LLM-Driven ETL Pipeline
+Memory creation and use mimic human processes via Extract, Transform, Load (ETL) s s .
+
+Extraction: Filter meaningful info from conversations using rules/examples tailored to agent purpose (e.g., support bot vs. wellness coach) s .
+Consolidation: LLM reviews new vs. existing memories—create, update, delete, or decay based on provenance (source, age, confidence) s . Reinforce via repetition; forget via decay s s .
+Retrieval: Blend scores for relevance, recency, and importance (beyond simple vector search) s .
+Proactive: Fetch at turn start (simple but potential latency) s .
+Reactive: Agent queries via tools during reasoning (efficient, autonomous) s s .
+Inference/Placement: Inject memories into prompts—system instructions for authority (stable facts) or history for flow (risks confusion) s .
+Multimodal Handling: Store text extracts from images/audio; text is the core for LLM processing s .
+Async Processing: All heavy ETL runs in background to avoid latency s s .
+5. Testing and Key Takeaways
+Metrics: Generation (precision/recall), retrieval (recall@K), latency (<200ms), end-to-end task success (via LLM judges) s .
+Overall Shift: From stateless LLMs to adaptive agents that learn personally—context engineering orchestrates, sessions manage now, memory builds over time s s .
+Provocative Insight: This blueprint enables personalized AI; start experimenting with recursive summarization s .
+These notes capture the podcast's deep dive up to 16:26. For flashcards or a quiz on these concepts, let me know!
